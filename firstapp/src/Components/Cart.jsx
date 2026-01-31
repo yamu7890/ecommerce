@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+
+
 export default function Cart() {
   const [cart, setCart] = useState({ items: [] });
   const [loading, setLoading] = useState(true);
@@ -35,7 +37,7 @@ export default function Cart() {
         params: { userId, productId },
       });
       if (res.status === 200) {
-        alert("Product removed from cart");
+        sweetalert("Product removed from cart");
         fetchCart(); // refresh cart
       }
     } catch (err) {
