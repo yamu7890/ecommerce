@@ -1,8 +1,7 @@
- import React, { useState } from "react"
+import React, { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import axios from "axios"
 import "./Login.css"
-import Swal from "sweetalert2"
 
 export default function Login() {
   const [email, setEmail] = useState("")
@@ -12,7 +11,6 @@ export default function Login() {
   async function handleLogin(e) {
     e.preventDefault()
     const newUser = { email, password }
-
 
     try {
       const response = await axios.post(
@@ -26,13 +24,7 @@ export default function Login() {
         navigate("/")
       }
     } catch (err) {
-      
-      Swal.fire({
-  icon: "error",
-  title: "Oops...",
-  text: "Something went wrong!",
-  footer: '<a href="#">Why do I have this issue?</a>'
-});
+      alert(err.response?.data?.message || "Login failed")
     }
   }
 

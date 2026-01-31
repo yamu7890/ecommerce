@@ -1,95 +1,49 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-
-
-
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 export default function Cart() {
-  const [cart, setCart] = useState({ items: [] });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchCart();
-  }, []);
-
-  async function fetchCart() {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      alert("Login first to view your cart");
-      return;
+    const [cartItems, setCartItems] = useState([])
+    const [loading, setLoading] = useState(true)
+    const userId=localStorage.getItem("userId")
+    useEffect(()=>{
+        fetchCartItems()
+    },[])
+    async function fetchCartItems(){
+        await axios.get("https://ecom-al7s.onrender.com/api/cart",
+            {params:{userId}}
+        )
+        .then((res)=>{
+            console.log(res)
+            if(res.status==200){
+                setCartItems(res.data.items)
+                setLoading(false)
+            }
+        })
     }
-    try {
-      const res = await axios.get("https://ecom-al7s.onrender.com/api/cart", {
-        params: { userId },
-      });
-      if (res.status === 200) {
-        setCart(res.data);
-        setLoading(false);
-      }
-    } catch (err) {
-      console.error("Error fetching cart:", err);
-    }
-  }
-
-  async function removeFromCart(productId) {
-    const userId = localStorage.getItem("userId");
-    try {
-      const res = await axios.delete("https://ecom-al7s.onrender.com/api/cart/remove", {
-        params: { userId, productId },
-      });
-      if (res.status === 200) {
-        sweetalert("Product removed from cart");
-        fetchCart(); // refresh cart
-      }
-    } catch (err) {
-      console.error("Error removing product:", err);
-    }
-  }
-
-  function calculateTotal() {
-    return cart.items.reduce(
-      (sum, item) => sum + item.product.price * item.quantity,
-      0
-    );
-  }
-
-  return (
-    <div className="container mt-4">
-      <h2>Your Cart</h2>
-      {loading ? (
-        <p>Loading...</p>
-      ) : cart.items.length === 0 ? (
-        <p>Your cart is empty.</p>
-      ) : (
-        <>
-          <div className="row row-cols-1 row-cols-md-2 g-4 mt-3">
-            {cart.items.map((item) => (
-              <div className="col" key={item._id}>
-                <div className="card h-100">
-                  <div className="card-body">
-                    <h5 className="card-title">{item.product.name}</h5>
-                    <p className="card-text">
-                      <b>Price:</b> ${item.product.price}
-                    </p>
-                    <p className="card-text">
-                      <b>Quantity:</b> {item.quantity}
-                    </p>
-                    <button
-                      onClick={() => removeFromCart(item.product._id)}
-                      className="btn btn-danger"
-                    >
-                      Remove
-                    </button>
+    return (
+        <div className='container mt-4'>
+      <h2>Cart List</h2>
+      {
+        loading ? (<p>Loading...</p>) : (
+          <div className='row row-cols-1 row-cols-md-3 g-4 mt-3'>
+            {
+              cartItems.map((i) => (
+                <div className="col" key={i.product._id}>
+                  <div className="card h-100">
+                      <div className="card-body">
+                        <h5 className="card-title"><b>Name:</b>{i.product.name}</h5>
+                        <p className="card-text"><b>Price: </b>{i.product.price}</p>
+                        <p className="card-text"><b>Category: </b>{i.product.category}</p>
+                        <p className="card-text"><b>Description: </b>{i.product.description}</p>
+                        <p className="card-text"><b>Stock: </b>{i.product.stock}</p>
+                        <p className="card-text"><b>Quantity: </b>{i.quantity}</p>
+                      </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            }
           </div>
-          <div className="mt-3">
-            <h4>Total: ${calculateTotal()}</h4>
-            <button className="btn btn-success">Checkout</button>
-          </div>
-        </>
-      )}
+        )
+      }
     </div>
-  );
+    )
 }

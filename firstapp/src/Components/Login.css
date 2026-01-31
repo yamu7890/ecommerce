@@ -1,7 +1,7 @@
- /* Full screen background */
+/* Full screen background */
 .login-bg {
   min-height: 100vh;
-  background: url("https://static.vecteezy.com/system/resources/thumbnails/040/455/942/small_2x/ai-generated-wooden-table-on-a-glittering-background-from-green-lights-free-photo.jpg") center/cover no-repeat;
+  background: url("/your-image-path.jpg") center/cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
