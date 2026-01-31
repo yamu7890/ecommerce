@@ -20,7 +20,7 @@ export default function Register() {
     console.log(import.meta.env)
 console.log(import.meta.env.VITE_API_BACKEND)
 
-    axios.post("http://localhost:4000/api/create-user",newUser)
+    axios.post("https://ecom-al7s.onrender.com/api/create-user",newUser)
       .then((res)=>{
         console.log(res.data)
         if(res.data.status===201){
